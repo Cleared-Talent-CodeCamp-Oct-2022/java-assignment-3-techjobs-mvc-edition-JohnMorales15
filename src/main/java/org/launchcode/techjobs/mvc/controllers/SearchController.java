@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.ArrayList;
 
 import static org.launchcode.techjobs.mvc.controllers.ListController.columnChoices;
+import static org.launchcode.techjobs.mvc.controllers.ListController.tableChoices;
 
 
 /**
@@ -33,15 +34,17 @@ public class SearchController {
     public String displaySearchResults(Model model, @RequestParam String searchTerm,
                                        @RequestParam String searchType){
         ArrayList<Job> jobs;
-        if (searchTerm.isEmpty() || searchTerm == "all"){
+        if (searchTerm.isEmpty() || searchTerm.equals("all")){
             jobs = JobData.findAll();
             model.addAttribute("title", "All Jobs");
         } else {
-            jobs = JobData.findByColumnAndValue(searchTerm, searchType);
-//            model.addAttribute("title", "Jobs with " + columnChoices.get(searchType) + ": " + searchTerm);
+            jobs = JobData.findByColumnAndValue(searchType, searchTerm);
+            model.addAttribute("title", "Jobs with " + columnChoices.get(searchType) + ": " + searchTerm);
         }
         model.addAttribute("jobs", jobs);
-        model.addAttribute("choices", columnChoices);
-        return "search";
+        model.addAttribute("columnChoices", columnChoices);
+        model.addAttribute("tableChoices", tableChoices);
+
+        return "list-jobs";
     }
 }
